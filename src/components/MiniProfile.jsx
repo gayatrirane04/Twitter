@@ -1,6 +1,5 @@
 'use client';
 
-
 import { UserButton,useUser } from "@clerk/nextjs";
 import { HiDotsHorizontal } from "react-icons/hi";
 

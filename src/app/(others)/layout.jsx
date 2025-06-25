@@ -1,4 +1,3 @@
-import localFont from 'next/font/local';
 import '.././globals.css';
 import LeftSidebar from '@/components/LeftSidebar';
 import RightSidebar from '@/components/RightSidebar';
@@ -6,16 +5,6 @@ import { ClerkProvider, ClerkLoaded, ClerkLoading } from '@clerk/nextjs';
 import Loader from '@/components/Loader';
 import SessionWrapper from '@/components/SessionWrapper';
 
-const geistSans = localFont({
-  src: '.././fonts/GeistVF.woff',
-  variable: '--font-geist-sans',
-  weight: '100 900',
-});
-const geistMono = localFont({
-  src: '.././fonts/GeistMonoVF.woff',
-  variable: '--font-geist-mono',
-  weight: '100 900',
-});
 
 export const metadata = {
   title: 'Next Social Media App',
@@ -27,7 +16,7 @@ export default function RootLayout({ children }) {
    <ClerkProvider>
        <SessionWrapper>
      <html lang="en">
-      <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
+      <body>
        <ClerkLoading>
          <Loader/>
        </ClerkLoading>
