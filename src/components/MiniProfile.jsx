@@ -18,7 +18,7 @@ export default function MiniProfile() {
             {user && user.fullName}
           </h4>
           <p className='text-gray-500 text-sm truncate'>
-            @{user && user.username}
+            @{user && user.fullName}
           </p>
         </div>
            <HiDotsHorizontal className='h-3 w-3 hidden xl:inline' />

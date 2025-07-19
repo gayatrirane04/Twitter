@@ -12,9 +12,6 @@ const firebaseConfig = {
   messagingSenderId: "740998318791",
   appId: "1:740998318791:web:c80713470fddccec1b4ce2"
 };
-
-console.log("🚨 authDomain:",  "twitter-94363.firebaseapp.com");
-
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
 

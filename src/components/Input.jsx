@@ -60,7 +60,7 @@ export default function Input() {
         });
       }
     );
-  };
+  }; 
 
   const handleSubmit = async () => {
     setPostLoading(true);
@@ -72,12 +72,26 @@ export default function Input() {
       body: JSON.stringify({
         userMongoId: user.publicMetadata.userMongoId,
         name: user.fullName,
-        username: user.username,
+        username: user.name || user.firstName || user.fullName || 'user' + Date.now(),
         text,
         profileImg: user.imageUrl,
         image: imageFileUrl,
       }),
     });
+    console.log('submitting post with data:',{
+      userMongoId: user.publicMetadata.userMongoId,
+      name: user.fullName,
+      username: user.name || user.firstName || user.fullName || 'user' + Date.now(),
+      text,
+      profileImg: user.imageUrl,  
+    })
+    console.log('Response:', response);
+    if (!response.ok) {
+      const error = await response.text();
+      console.error('Error creating post:', error);
+      setPostLoading(false);
+      return;
+    }
     setPostLoading(false);
     setText('');
     setSelectedFile(null);
