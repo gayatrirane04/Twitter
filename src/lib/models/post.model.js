@@ -1,24 +1,23 @@
 import mongoose from 'mongoose';
 
 const postSchema = new mongoose.Schema(
-    {
-        text: {
+  {
+    text: {
       type: String,
       required: true,
-       },
-        image: {
-        type: String,
-       },
-        user: {
-       type: mongoose.Schema.Types.ObjectId,
-       ref: 'User',
-       required: true,
-       },
-        name: {
-        type: String,
-        required: true,
-       },
-          username: {
+    },
+    image: {
+      type: String,
+    },
+    user: {
+      type: String,
+      required: true,
+    },
+    name: {
+      type: String,
+      required: true,
+    },
+    username: {
       type: String,
       required: true,
     },
@@ -42,11 +41,11 @@ const postSchema = new mongoose.Schema(
         },
       ],
       default: [],
-    }, 
-   },
-   { timestamps: true }
+    },
+  },
+  { timestamps: true }
 );
 
-const Post = mongoose.models.Post || mongoose.model('Post',postSchema);
+const Post = mongoose.models.Post || mongoose.model('Post', postSchema);
 
 export default Post;
