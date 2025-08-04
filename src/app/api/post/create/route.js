@@ -7,17 +7,19 @@ export const POST = async (req) => {
   const user = await currentUser();
   
   // Production: Require authenticated user
-  if (!user) {
-    return new Response('Un  authorized', { status: 401 });
-  }
+   if (!user){
+    return new Response('Unauthorized', { status: 401 });
+   }
   
   try {
     await connect();
     const data = await req.json();
+    console.log('Received data:', data);
     
     // Production: Validate required fields
     if (!data.text || !data.name || !data.username) {
-      return new Response('Missing required fields', { status: 400 });
+      console.log('Missing fields - text:', !!data.text, 'name:', !!data.name, 'username:', !!data.username);
+      return new Response(`Missing required fields: ${!data.text ? 'text ' : ''}${!data.name ? 'name ' : ''}${!data.username ? 'username' : ''}`, { status: 400 });
     }
 
     const newPost = await Post.create({

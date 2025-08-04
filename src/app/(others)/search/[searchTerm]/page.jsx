@@ -16,9 +16,9 @@ export default function SearchPage() {
              Search results for
           </h1> 
         </div>
-         {/* {data && data.length === 0 && (
+         {data && data.length === 0 && (
             <h1 className='text-center pt-6 text-2xl'>No results found</h1>
-         )} */}
+         )}
          maping of data
     </div>
   )

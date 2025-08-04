@@ -64,64 +64,39 @@ export default function Input() {
 
   const handleSubmit = async () => {
     setPostLoading(true);
-    
-    // Debug: Check what's in the user object
-    console.log('Complete user object:', user);
-    console.log('User publicMetadata:', user.publicMetadata);
-    console.log('User privateMetadata:', user.privateMetadata);
-    
-    // Fallback logic for name and username
-    const name = user.fullName || `${user.firstName || ''} ${user.lastName || ''}`.trim() || 'Anonymous';
-    const username = user.username || user.firstName?.toLowerCase() || 'user';
-    
-    // Use Clerk's user ID directly
-    const userMongoId = user.publicMetadata?.userMongoId || user.id;
-    
-    console.log('Sending post data:', {
-      userMongoId,
-      name,
-      username,
-      text,
-      profileImg: user.imageUrl,
-      image: imageFileUrl,
-    });
-    
-    const response = await fetch('/api/post/create', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        userMongoId,
-        name,
-        username,
-        text,
-        profileImg: user.imageUrl,
-        image: imageFileUrl,
-      }),
-    });
-    
-    console.log('Response status:', response.status);
-    console.log('Response ok:', response.ok);
-    
-    if (response.ok) {
-      const result = await response.json();
-      console.log('Post created successfully:', result);
+    try {
+      const response = await fetch('/api/post/create', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          userMongoId: user.publicMetadata?.userMongoId,
+          name: user.fullName || `${user.firstName} ${user.lastName}` || 'Anonymous',
+          username: user.username || user.emailAddresses?.[0]?.emailAddress?.split('@')[0] || 'user',
+          text,
+          profileImg: user.imageUrl,
+          image: imageFileUrl,
+        }),
+      });
+      
+      if (!response.ok) {
+        const errorText = await response.text();
+        console.error('Error creating post:', errorText);
+        alert('Failed to create post. Please try again.');
+        return;
+      }
+      
       setText('');
       setSelectedFile(null);
       setImageFileUrl(null);
       location.reload();
-    } else {
-      const errorText = await response.text();
-      console.error('POST request failed:', {
-        status: response.status,
-        statusText: response.statusText,
-        error: errorText
-      });
-      alert(`Failed to create post: ${response.status} - ${errorText}`);
+    } catch (error) {
+      console.error('Error submitting post:', error);
+      alert('Failed to create post. Please try again.');
+    } finally {
+      setPostLoading(false);
     }
-    
-    setPostLoading(false);
   };
 
   if (!isSignedIn || !isLoaded) {
