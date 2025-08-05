@@ -44,6 +44,7 @@ export default function CommentModal() {
     if (!user) {
       return router.push('/sign-in');
     }
+    console.log('User data:', { name: user.name, username: user.username, email: user.primaryEmailAddress?.emailAddress });
     try {
       const res = await fetch('/api/post/comment', {
         method: 'PUT',
@@ -54,8 +55,8 @@ export default function CommentModal() {
           postId,
           comment: input,
           user: user.publicMetadata.userMongoId,
-          name: user.name,
-          username: user.username,
+          name: user.name || user.firstName + ' ' + user.lastName,
+          username: user.username ,
           profileImg: user.imageUrl,
         }),
       });
@@ -102,13 +103,36 @@ export default function CommentModal() {
               <h4 className='font-bold sm:text-[16px] text-[15px] hover:underline truncate'>
                 {postLoading ? 'Name' : post?.name}
               </h4>
-              <span className='text-sm sm:text-[15px] truncate'>
+              {/* <span className='text-sm sm:text-[15px] truncate'>
                 @{postLoading ? 'username' : post?.username}
-              </span>
+              </span> */}
             </div>
             <p className='text-gray-500 text-[15px] sm:text-[16px] ml-16 mb-2'>
               {postLoading ? 'Loading...' : post?.text}
             </p>
+            
+            {/* Comments Section */}
+            {post?.comments && post.comments.length > 0 && (
+              <div className='border-t border-gray-200 mt-2'>
+                {post.comments.map((comment, index) => (
+                  <div key={index} className='flex p-3 space-x-3 border-b border-gray-100'>
+                    <img
+                      src={comment.profileImg}
+                      alt='commenter'
+                      className='h-8 w-8 rounded-full'
+                    />
+                    <div>
+                      <div className='flex items-center space-x-1'>
+                        <h4 className='font-bold text-sm'>{comment.name}</h4>
+                        {/* <span className='text-gray-500 text-sm'>@{comment.username}</span> */}
+                      </div>
+                      <p className='text-gray-800 text-sm mt-1'>{comment.comment}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+            
             <div className='flex p-3 space-x-3'>
               <img
                 src={user.imageUrl}
