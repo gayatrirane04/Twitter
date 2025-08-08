@@ -1,4 +1,4 @@
-import { currentUser } from "@clerk/nextjs/dist/types/server";
+import { currentUser } from "@clerk/nextjs/server";
 import { connect } from '../../../../lib/mongodb/mongoose.js';
 import User from '../../../../lib/models/user.model.js';
 

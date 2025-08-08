@@ -28,6 +28,7 @@ export default async function UserPage({ params }) {
     }
   } catch (error) {
     console.error('Failed to fetch post', error);
+    console.error('Full error:', error.message, error.stack);
     data = null;
   }
 
