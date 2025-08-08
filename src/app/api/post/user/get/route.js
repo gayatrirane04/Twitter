@@ -1,23 +1,19 @@
-import Post from '../../../../../lib/models/post.model.js';
-import { connect } from '../../../../../lib/mongodb/mongoose.js';
+import Post from '../../../../../lib/models/post.model';
+import { connect } from '../../../../../lib/mongodb/mongoose';
 
 export const POST = async (req) => {
   try {
     await connect();
-    const { userId } = await req.json();
-    
-    if (!userId) {
-      return new Response('User ID is required', { status: 400 });
-    }
 
-    const posts = await Post.find({ user: userId }).sort({ createdAt: -1 });
+    const data = await req.json();
 
-    return new Response(JSON.stringify(posts), {
-      status: 200,
-      headers: { 'Content-Type': 'application/json' },
+    const posts = await Post.find({ user: data.userId }).sort({
+      createdAt: -1,
     });
-  } catch (error) {
-    console.error('Error getting user posts:', error);
-    return new Response('Error getting user posts', { status: 500 });
+
+    return new Response(JSON.stringify(posts), { status: 200 });
+  } catch (err) {
+    console.log(err);
+    return new Response('Failed to fetch the post data', { status: 500 });
   }
 };

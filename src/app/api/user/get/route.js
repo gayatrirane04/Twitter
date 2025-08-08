@@ -1,27 +1,17 @@
-import User from '../../../../lib/models/user.model.js';
-import { connect } from '../../../../lib/mongodb/mongoose.js';
+import User from '../../../../lib/models/user.model';
+import { connect } from '../../../../lib/mongodb/mongoose';
 
 export const POST = async (req) => {
   try {
     await connect();
-    const { username } = await req.json();
-    
-    if (!username) {
-      return new Response('Username is required', { status: 400 });
-    }
 
-    const user = await User.findOne({ username });
-    
-    if (!user) {
-      return new Response('User not found', { status: 404 });
-    }
+    const data = await req.json();
 
-    return new Response(JSON.stringify(user), {
-      status: 200,
-      headers: { 'Content-Type': 'application/json' },
-    });
-  } catch (error) {
-    console.error('Error getting user:', error);
-    return new Response('Error getting user', { status: 500 });
+    const user = await User.findOne({ username: data.username });
+
+    return new Response(JSON.stringify(user), { status: 200 });
+  } catch (err) {
+    console.log(err);
+    return new Response('Failed to fetch the user data', { status: 500 });
   }
 };

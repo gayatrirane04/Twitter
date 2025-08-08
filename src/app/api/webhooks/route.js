@@ -4,6 +4,7 @@ import { clerkClient } from '@clerk/nextjs/server';
 import { createOrUpdateUser, deleteUser } from '@/lib/actions/user';
 
 export async function POST(req) {
+  console.log('🔥 WEBHOOK CALLED!');
   // You can find this in the Clerk Dashboard -> Webhooks -> choose the endpoint
   const WEBHOOK_SECRET = process.env.WEBHOOK_SECRET;
 
@@ -57,9 +58,12 @@ export async function POST(req) {
   console.log('Webhook body:', body);
 
   if (eventType === 'user.created' || eventType === 'user.updated') {
+    console.log('👤 USER EVENT:', eventType);
     const { id, first_name, last_name, image_url, email_addresses, username } =
       evt?.data;
+    console.log('User data from webhook:', { id, first_name, last_name, username });
     try {
+      console.log('Calling createOrUpdateUser...');
       const user = await createOrUpdateUser(
         id,
         first_name,
@@ -68,6 +72,7 @@ export async function POST(req) {
         email_addresses,
         username
       );
+      console.log('User created/updated:', user);
       if (user && eventType === 'user.created') {
         try {
           await clerkClient.users.updateUserMetadata(id, {

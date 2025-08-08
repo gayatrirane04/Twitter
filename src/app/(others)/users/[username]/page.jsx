@@ -1,25 +1,34 @@
 import { HiArrowLeft } from 'react-icons/hi';
 import Link from 'next/link';
 import Post from '@/components/Post';
-// import FollowButton from '@/components/FollowButton';
+import FollowButton from '@/components/FollowButton';
 
 export default async function UserPage({ params }) {
-  let data = null;
+  const { username } = await params;
+  let data = username;
   try {
     const result = await fetch(process.env.URL + '/api/user/get', {
       method: 'POST',
-      body: JSON.stringify({ username: params.username }),
+      body: JSON.stringify({ username }),
       cache: 'no-store',
     });
     data = await result.json();
-    const userPosts = await fetch(process.env.URL + '/api/post/user/get', {
-      method: 'POST',
-      body: JSON.stringify({ userId: data._id }),
-      cache: 'no-store',
-    });
-    data.posts = await userPosts.json();
+    console.log('User data:', data);
+    
+    if (data && data._id) {
+      const userPosts = await fetch(process.env.URL + '/api/post/user/get', {
+        method: 'POST',
+        body: JSON.stringify({ userId: data._id }),
+        cache: 'no-store',
+      });
+      const postsResult = await userPosts.json();
+      data.posts = Array.isArray(postsResult) ? postsResult : [];
+    } else {
+      data = null;
+    }
   } catch (error) {
     console.error('Failed to fetch post', error);
+    data = null;
   }
 
   return (
@@ -50,22 +59,22 @@ export default async function UserPage({ params }) {
 
             <div className='mt-4 flex space-x-4'>
               <div>
-                <span className='font-bold'>{data.following.length}</span>{' '}
+                <span className='font-bold'>{data.following?.length || 0}</span>{' '}
                 Following
               </div>
               <div>
-                <span className='font-bold'>{data.followers.length}</span>{' '}
+                <span className='font-bold'>{data.followers?.length || 0}</span>{' '}
                 Followers
               </div>
             </div>
             <div className='mt-4 flex-1'>
-              {/* <FollowButton user={data} /> */}
+              <FollowButton user={data} />
             </div>
           </div>
         </div>
       )}
       {data &&
-        data.posts &&
+        Array.isArray(data.posts) &&
         data.posts.map((post) => {
           return <Post key={post._id} post={post} />;
         })}
